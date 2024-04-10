@@ -122,7 +122,7 @@
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Dna-SNP.svg/363px-Dna-SNP.svg.png" alt="Haplotypes" style="width: 300px; height: auto;">
 
         <p><strong>Data Collection for Genetic Relatedness analysis</strong></p>
-        <p>Genetic relatedness data is collected through DNA sequencing or genotyping. Companies like Ancestry.com provide DNA testing kits where users send a DNA sample, typically saliva, for analysis. The data returned includes information on SNPs and haplotypes, which serve as genetic markers.</p>
+        <p>Genetic relatedness data is collected through DNA sequencing or genotyping. Some companies send DNA testing kits where users send a DNA sample, typically saliva, for analysis. The data returned includes information on SNPs and haplotypes, which serve as genetic markers.</p>
 
         <p><strong>Data File Format</strong></p>
         <p>The DNA sequenicng data is typically in a file format containing positions on the genome inherited from both parents. This data allows for the analysis of genetic relatedness and ancestry composition. It usually includes a vast amount of SNPs which can be analyzed to provide insights into a person's ancestry and potential health predispositions.</p>
@@ -594,6 +594,12 @@
     </div>
 
 
+<div id="downloadButton" style="display: none;">
+    <button onclick="exportTableToCSV('relatedness_analysis.csv')">Download as CSV</button>
+</div>
+
+
+
 </div>
     <!-- PLINK Output Explained Section -->
 <div id="plink" class="tab">
@@ -711,6 +717,7 @@ function openTab(tabName) {
                         loadingBar.style.display = 'none';
 
 document.getElementById('analysisResults').style.display = 'block';
+document.getElementById('downloadButton').style.display = 'block';
                     }
                 }, 200); // Adjust time here for longer or shorter simulation
             } else {
@@ -722,6 +729,52 @@ document.getElementById('analysisResults').style.display = 'block';
         document.addEventListener('DOMContentLoaded', function() {
             openTab('background');
         });
+
+
+function exportTableToCSV(filename) {
+    var csv = [];
+    var rows = document.querySelectorAll("#analysisResults table tr");
+    
+    for (var i = 0; i < rows.length; i++) {
+        var row = [], cols = rows[i].querySelectorAll("td, th");
+        
+        for (var j = 0; j < cols.length; j++) 
+            row.push('"' + cols[j].innerText + '"');
+        
+        csv.push(row.join(","));        
+    }
+
+    // Download CSV
+    downloadCSV(csv.join("\n"), filename);
+}
+
+function downloadCSV(csv, filename) {
+    var csvFile;
+    var downloadLink;
+
+    // CSV file
+    csvFile = new Blob([csv], {type: "text/csv"});
+
+    // Download link
+    downloadLink = document.createElement("a");
+
+    // File name
+    downloadLink.download = filename;
+
+    // Create a link to the file
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+
+    // Hide download link
+    downloadLink.style.display = "none";
+
+    // Add the link to DOM
+    document.body.appendChild(downloadLink);
+
+    // Click download link
+    downloadLink.click();
+}
+
+
     </script>
 </body>
 </html>
